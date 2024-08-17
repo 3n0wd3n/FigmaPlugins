@@ -1,0 +1,137 @@
+<h2 class="color-palette__heading--plugin-name">Color palette creator</h2>
+<h3 class="color-palette__heading--advice">Add as many colors you want:</h3>
+<p class="color-palette__text--info">
+  These color will be crated in color palette that will take care of different states of color
+</p>
+<p>
+  Add color code that will be generated
+  <input id="color-0" class="colorInput" value="#fff" />
+  <input id="name-0" class="nameInput" value="white" />
+</p>
+<button id="more" class="color-palette__button--more">Add One More</button>
+<button id="create" class="color-palette__button--create">Create</button>
+<button id="cancel" class="color-palette__button--cancel">Cancel</button>
+<script>
+  // This code execute init function when window is properly loaded
+  window.onload = () => {
+    init();
+  };
+
+  // Function for initialization
+  const init = () => {
+    clickActions();
+  };
+
+  // Function that only calls click event functions
+  const clickActions = () => {
+    addColor();
+    createColorPalette();
+    cancelPlugin();
+  };
+
+  // Creating new input (color code and name)
+  const newInput = (type) => {
+    const inputElement = document.createElement("input");
+
+    if (type === "color") {
+      inputElement.classList.add("colorInput");
+      let newColorId = document.querySelectorAll(".colorInput").length;
+
+      inputElement.setAttribute("id", `color-${newColorId}`);
+      inputElement.setAttribute("value", "#fff");
+    } else {
+      inputElement.classList.add("nameInput");
+      let newNameId = document.querySelectorAll(".nameInput").length;
+
+      inputElement.setAttribute("id", `name-${newNameId}`);
+      inputElement.setAttribute("value", "white");
+    }
+
+    return inputElement;
+  };
+
+  // Adding color input after clicking on the button
+  const addColor = () => {
+    document.querySelector(".color-palette__button--more").onclick = () => {
+      // Create a new paragraph element
+      const newParagraph = document.createElement("p");
+
+      // Create a text node for the paragraph
+      const textNode = document.createTextNode("Add color code that will be generated ");
+
+      // Append the text node to the paragraph
+      newParagraph.appendChild(textNode);
+
+      // Create the input element for color and append the input element to the paragraph
+      let colorInputElement = newInput("color");
+      newParagraph.appendChild(colorInputElement);
+
+      // Create the input element for name of the color and append the input element to the paragraph
+      let nameInputElement = newInput("name");
+      newParagraph.appendChild(nameInputElement);
+
+      // Insert the new paragraph before the button with id "more"
+      document.querySelector("#more").insertAdjacentElement("beforebegin", newParagraph);
+    };
+  };
+
+  // Return values from inputs in array
+  const getValues = (inputs) => {
+    let values = [];
+
+    inputs.forEach((input) => {
+      values.push(input.value);
+    });
+
+    return values;
+  };
+
+  // Unification of values from inputs
+  const setColorProperty = (nameValues, colorValues, inputCount) => {
+    let colorPropertyArray = [];
+
+    for (let i = 0; i < inputCount; i++) {
+      let tmpArray = [];
+      tmpArray.push(nameValues[i]);
+      tmpArray.push(colorValues[i]);
+      colorPropertyArray.push(tmpArray);
+      tmpArray = [];
+    }
+
+    return colorPropertyArray;
+  };
+
+  // TODO: Function that after triggering button sets variables from color palette
+  const setColorPaletteAsVariables = () => {
+    document.querySelector(".color-palette__button--create-variables").onclick = () => {
+      // TODO:
+    };
+  };
+
+  // Get necessary values for calling function that create color palette
+  const createColorPalette = () => {
+    document.querySelector(".color-palette__button--create").onclick = () => {
+      let nameInputs = document.querySelectorAll(".nameInput");
+      let nameValues = getValues(nameInputs);
+
+      let colorInputs = document.querySelectorAll(".colorInput");
+      let colorValues = getValues(colorInputs);
+
+      let inputsCount = colorInputs.length;
+
+      let colorPropertyArray = setColorProperty(nameValues, colorValues, inputsCount);
+
+      parent.postMessage(
+        { pluginMessage: { type: "create-color-palette", colorArray: colorPropertyArray, count: inputsCount } },
+        "*"
+      );
+    };
+  };
+
+  // Cancel plugin that creates color palette
+  const cancelPlugin = () => {
+    document.querySelector(".color-palette__button--cancel").onclick = () => {
+      parent.postMessage({ pluginMessage: { type: "cancel" } }, "*");
+    };
+  };
+</script>
