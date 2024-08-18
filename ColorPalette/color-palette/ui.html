@@ -186,8 +186,16 @@
           let nameInputElement = newInput("name");
           newParagraph.appendChild(nameInputElement);
 
+          // Get paragraphs
+          let paragraphs = document.querySelectorAll(".color-palette__text--content");
+
+          // Get length of  paragraphs
+          let paragraphsLen = paragraphs.length;
+
+          console.log(paragraphs, paragraphsLen - 1, paragraphs[length - 1]);
+
           // Insert the new paragraph before the button with id "more"
-          document.querySelector(".color-palette__text--content").insertAdjacentElement("afterend", newParagraph);
+          paragraphs[paragraphsLen - 1].insertAdjacentElement("afterend", newParagraph);
         };
       };
 
